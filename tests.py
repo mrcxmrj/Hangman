@@ -1,5 +1,6 @@
-string = "hello"
-password = "_____"
-for index, character in enumerate(string):
-    if character == "l":
-        password = password[:index] + "l" + password[index+1:]
+import random
+
+with open("dictionary.txt", "r") as dictionary:
+    words = [line for line in dictionary]
+word = random.choice(words)
+print(word)
