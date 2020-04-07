@@ -27,23 +27,6 @@ black = (0, 0, 0)
 #create a font object
 font = pygame.font.Font(None, 100)
 
-# def newGame():
-#     #generate the word
-#     with open("dictionary.txt", "r") as dictionary:
-#         words = [line for line in dictionary]
-#     global word 
-#     word = random.choice(words).strip("\n")
-#     print(word)
-#     global password
-#     password = ""
-#     for letter in word:
-#         password += "_"
-#     global currPassword
-#     currPassword = " ".join(password)
-#     global counter
-#     counter = 0
-# newGame()
-
 #generate the word
 with open("dictionary.txt", "r") as dictionary:
     words = [line for line in dictionary]
@@ -83,10 +66,10 @@ def showUI():
     usedLettersPrintable = ", ".join(usedLettersPrintable)
     message("definitely not: "+usedLettersPrintable, black, False, 0, y-50) 
 
-# Run until the user asks to quit
+#Run until the user asks to quit
 running = True
 while running:
-    # Did the user click the window close button?
+    #Did the user click the window close button?
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -104,7 +87,7 @@ while running:
                     counter += 1
                     usedLetters.add(pressedLetter)
 
-    # Fill the background with white
+    #Fill the background with white
     screen.fill(white)
 
     if counter == 8:
