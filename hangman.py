@@ -17,44 +17,44 @@ y = 500
 # Set up the drawing window
 screen = pygame.display.set_mode([x, y])
 
-# define the RGB value for white 
-#  green, blue colour
+# define the RGB values
 white = (255, 255, 255)
 green = (0, 255, 0)
 blue = (0, 0, 128)
 red = (255, 0, 0)
+black = (0, 0, 0)
 
 #create a font object
 font = pygame.font.Font(None, 100)
 
-def newGame():
-    #generate the word
-    with open("dictionary.txt", "r") as dictionary:
-        words = [line for line in dictionary]
-    global word 
-    word = random.choice(words).strip("\n")
-    print(word)
-    global password
-    password = ""
-    for letter in word:
-        password += "_"
-    global currPassword
-    currPassword = " ".join(password)
-    global counter
-    counter = 0
+# def newGame():
+#     #generate the word
+#     with open("dictionary.txt", "r") as dictionary:
+#         words = [line for line in dictionary]
+#     global word 
+#     word = random.choice(words).strip("\n")
+#     print(word)
+#     global password
+#     password = ""
+#     for letter in word:
+#         password += "_"
+#     global currPassword
+#     currPassword = " ".join(password)
+#     global counter
+#     counter = 0
+# newGame()
 
-newGame()
-# #generate the word
-# with open("dictionary.txt", "r") as dictionary:
-#     words = [line for line in dictionary]
-# word = random.choice(words).strip("\n")
-# print(word)
-# password = ""
-# for letter in word:
-#     password += "_"
-# currPassword = " ".join(password)
-
-# counter = 0
+#generate the word
+with open("dictionary.txt", "r") as dictionary:
+    words = [line for line in dictionary]
+word = random.choice(words).strip("\n")
+print(word)
+password = ""
+for letter in word:
+    password += "_"
+currPassword = " ".join(password)
+usedLetters = set()
+counter = 0
 
 #create a text object
 text = font.render(currPassword, True, blue)
@@ -74,6 +74,14 @@ def message(content, color, center=True, xposition=0, yposition=0, fontsize=50):
         messageBox.topleft = ((xposition),(yposition))
     screen.blit(messageText, messageBox)
 
+def showUI():
+    message("number of tries:"+str(counter), black, False, 0)
+    message("maximum number of tries = 8", black, False, 0, 50, 25)
+    usedLettersPrintable = ""
+    for letter in usedLetters:
+        usedLettersPrintable += letter
+    usedLettersPrintable = ", ".join(usedLettersPrintable)
+    message("definitely not: "+usedLettersPrintable, black, False, 0, y-50) 
 
 # Run until the user asks to quit
 running = True
@@ -84,21 +92,23 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             pressedLetter = pygame.key.name(event.key)
-            if pressedLetter in word:
-                for index, character in enumerate(word):
-                    if character == pressedLetter:
-                        password = password[:index] + pressedLetter + password[index+1:]
-                currPassword = " ".join(password)
-                print(currPassword)
-                text = font.render(currPassword, True, blue)
-            else:
-                counter += 1
+            if pressedLetter not in usedLetters and len(pressedLetter) == 1 and pressedLetter.isalpha():
+                if pressedLetter in word:
+                    for index, character in enumerate(word):
+                        if character == pressedLetter:
+                            password = password[:index] + pressedLetter + password[index+1:]
+                    currPassword = " ".join(password)
+                    print(currPassword)
+                    text = font.render(currPassword, True, blue)
+                else:
+                    counter += 1
+                    usedLetters.add(pressedLetter)
 
     # Fill the background with white
-    screen.fill((255, 255, 255))
+    screen.fill(white)
 
     if counter == 8:
-        message("number of tries:"+str(counter), (0,0,0), False, 0)
+        showUI()
         text = font.render(currPassword, True, red)
         #print the password
         screen.blit(text, textRect)
@@ -108,7 +118,7 @@ while running:
         running = False
         sleep(2)
     elif currPassword == " ".join(word):
-        message("number of tries:"+str(counter), (0,0,0), False, 0)
+        showUI()
         text = font.render(currPassword, True, green)
         #print the password
         screen.blit(text, textRect)
@@ -118,10 +128,9 @@ while running:
         running = False
         sleep(2)
     else:
-        message("number of tries:"+str(counter), (0,0,0), False, 0)
+        showUI ()
         #print the password
         screen.blit(text, textRect)
         pygame.display.flip()
 
-# Done! Time to quit.
 pygame.quit()
