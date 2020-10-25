@@ -92,7 +92,7 @@ while running:
 
     if counter == 8:
         showUI()
-        text = font.render(currPassword, True, red)
+        text = font.render(word, True, red)
         #print the password
         screen.blit(text, textRect)
         message("You Lost :(", red)
